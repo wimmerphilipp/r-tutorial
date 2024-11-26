@@ -1,2 +1,2 @@
-# R-Tutorium-SoSe23
-Kursmaterial R Tutorium
+# R-Tutorial-Winter 24
+Course material
