@@ -251,7 +251,11 @@ myframe[,c("ID","Color")]
 # variable x1 in the data frame
 myframe$ID    
 # 3rd element of variable x1 in the data frame
-myframe$ID[3]              
+myframe$ID[3]  
+# You can also perform a table by
+table(myframe$Color)
+# Or also a cross table
+table(myframe$Color, myframe$Passed)
 
 ## Lists
 # An ordered collection of objects (components). A list allows you to gather a 
@@ -279,13 +283,15 @@ mylist[c(1:2)]
 # vector of character strings (the original values) mapped to these integers.
 
 # example
-# variable gender with 20 "male" entries and 30 "female" entries 
+# variable gender with 20 "male" entries, 30 "female" entries and 10 "other" 
 # (the rep command replicates a given argument a given number of times)
 # entries are saved as characters
 gender <- c(rep("male",20), rep("female", 30), rep("other", 10)) 
 gender
 class(gender)
 summary(gender)
+table(gender)
+str(gender)
 # transform characters into factors
 gender <- factor(gender) 
 gender
@@ -294,35 +300,9 @@ class(gender)
 # 1=female, 2=male internally (alphabetically)
 # R now treats gender as a nominal variable 
 summary(gender)
+summary(gender)
+table(gender)
+str(gender)
 # R will treat factors as nominal variables in statistical procedures and 
 # graphical analyses. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
