@@ -37,6 +37,11 @@ packages <- c(
 # install and load packages
 install_and_load(packages)
 
+
+# install and load packages manually
+install.packages("tidyverse")
+library(tidyverse)
+
 # Welcome to the R-Tutorial 
 # this file will guide you around the basic settings of RStudio and will
 # introduce you to some basic operations in R
@@ -79,6 +84,7 @@ install_and_load(packages)
 # after running the code, the console shows you the result
 # however, this result is not saved anywhere
 a <- 1+1
+a+2
 # the arrow pointing to the "a" indicates that we defined "a" as the result of 
 # our 1+1 calculation. however, now the console doesn't show a result. Take 
 # care when naming your values as R is sensitive to upper and lower case 
@@ -117,7 +123,7 @@ k <- exp(log(25))
 # we are done with the basic operations in R. as we do not need these values,
 # we will get rid off them. 
 # if you want to get rid off only one entry in your environment, use:
-rm(a)
+rm(a, b)
 # if you want to get rid off all entries, use:
 rm(list = ls())
 
@@ -143,6 +149,7 @@ exp(log(25))
 # functions can also be used with "pipes". these are not of base R, but need 
 # the dplyr package. we will look at the package later. 
 5%>%exp
+exp(5)
 library(dplyr)
 5%>%exp
 # the %>%-operator is the pipe that basically passes the left hand side of the 
