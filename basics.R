@@ -1,4 +1,3 @@
-
 # Welcome to the R-Tutorial 
 # this file will guide you around the basic settings of RStudio and will
 # introduce you to some basic operations in R

@@ -1,6 +1,6 @@
 ---
-title: "R-Tutorium"
-author: "Lukas Diex"
+title: "R-Tutorial"
+author: "Philipp Wimmer"
 date: "`r Sys.Date()`"
 output: pdf_document
 ---
