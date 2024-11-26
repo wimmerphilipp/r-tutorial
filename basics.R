@@ -1,3 +1,42 @@
+
+# function to install and load packages
+install_and_load <- function(package_names) {
+  for (package in package_names) {
+    if (!require(package, character.only = TRUE, quietly = TRUE)) {
+      install.packages(package, dependencies = TRUE)
+    }
+    library(package, character.only = TRUE, quietly = TRUE)
+  }
+}
+
+
+# list of packages to install and load
+packages <- c(
+  "webshot", "ineq", "dineq","broom",
+  "sf", 
+  "convey", "descr",
+  "EnvStats", 
+  "forcats", "ggstance",
+  "Hmisc", 
+  "ggtext", "ggthemes", 
+  "grid", "gridExtra", 
+  "knitr", "lemon",
+  "matrixStats", "mitools", 
+  "plotly", "readxl", 
+  "spatstat", "stringr",
+ "stargazer", "survey", 
+  "tidyverse", "tinytex", "vtable", 
+  "xtable",
+  "viridis", 
+  "bibtex", "binsreg", "writexl", "knitcitations", "highcharter","tigris","rmapshaper",
+  "rbenchmark","tmap",
+  "leaflet","terra", "pdftools","stringr","openxlsx", "wesanderson"
+)
+
+
+# install and load packages
+install_and_load(packages)
+
 # Welcome to the R-Tutorial 
 # this file will guide you around the basic settings of RStudio and will
 # introduce you to some basic operations in R
