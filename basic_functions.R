@@ -171,12 +171,14 @@ c(1,3,5) %in% 3
 
 #Statistical probability functions
 
-#generates 1 random number from the standard normal distribution
+#generates 1 random number from the standard normal distribution (mean=0, standard deviation=100)
 rnorm(1,0,100)       
 
-#normal density function  - probability density function (PDF)                    
+#normal density function  - probability density function (PDF) for value  1, mean=0, standard deviation=1                
 dnorm(1,0,1)
 x <- seq(from = -5, to = 5, by = 0.05)
+
+# Random Sampling
 rnorm(length(x), 0, 1)
 
 dnorm(x)
@@ -186,7 +188,7 @@ library(ggplot2)
 norm_dat <- data.frame(x = x, pdf = dnorm(x))
 ggplot(norm_dat) + geom_line(aes(x = x, y = pdf))
 
-#cumulative normal probability - cumulative distribution function (cdf)
+#cumulative normal probability - cumulative distribution function (cdf) by default: mean=0, sd=1
 pnorm(0)
 
 #normal quantile (value at the p percentile of normal distribution))
@@ -196,13 +198,14 @@ qnorm(0.8)
 #distributen. Other distributions may vary in their parametrization.
 
 #commonly used distributions:
-#Normal:    -norm
-#Uniform:   -unif
-#Beta:      -beta
-#gamma:     -gamma
-#Binomial:  -binom
-#Poisson:   -pois
-#Weibull:   -weibull
+
+#Normal:    -norm     The Gaussian distribution
+#Uniform:   -unif     A distribution where all values have equal probability
+#Beta:      -beta     Used in Bayesian statistics, constrained to [0, 1]
+#gamma:     -gamma    Models waiting times or rainfall amounts
+#Binomial:  -binom    The number of successes in a fixed number of trials
+#Poisson:   -pois     The number of events in a fixed interval of time
+#Weibull:   -weibull  Used in reliability engineering
 
 ################################################################################
 
@@ -252,7 +255,7 @@ dice/2
 #multiplicate each row 
 dice*dice   
 
-#inner matrix multiplication
+#inner matrix multiplication (1×1+2×2+3×3+4×4+5×5+6×6=91)
 dice%*%dice   
 
 #outer matrix multiplication
@@ -304,6 +307,10 @@ if(player_1 > player_2) {
 p <- 6
 q <- 5
 
+# for these values there would be no solution
+#p <- 2
+#q <- 5
+
 under_square_root <- (p/2)^2 - q
 
 if(under_square_root > 0) {
@@ -339,7 +346,8 @@ while(condition) {  # if this condition holds
 count <- 1
 while(count <= 7) {
   print(paste("count is set to", count))
-  count <- count+1
+  count <- count+1 
+                   
 }
 # note that we have two expressions in this example. one tells the loop what to
 # print. and the other increments the count variable to prevent the loop from
@@ -352,7 +360,7 @@ count
 # by 5
 count <- 1
 while(count <=7) {
-  if(count %% 5 ==0){
+  if(count %% 5 ==0){  # the modulo operator returns the remainder of the division of count by 5, if the remainder is 0, then the count is divisible by 5 and the count stops.
     break
   }
   print(paste("count is set to", count))
@@ -477,11 +485,12 @@ cities <- list("Turin", "Barcelona", "London", "Paris", "Havanna",
 lapply(cities, nchar)
 sapply(cities, nchar)
 # another example
-first_and_last <- function(name){
-  name <- gsub(" ", "", name)
-  letters <- strsplit(name, split = "")[[1]]
-  c(first = min(letters), last = max(letters))
+first_and_last <- function(name) {
+  name <- gsub(" ", "", name)  # Removes spaces from the string
+  letters <- strsplit(name, split = "")[[1]]  # Splits the word into individual characters
+  c(first = letters[1], last = letters[length(letters)])  # Returns the first and last character
 }
+
 sapply(cities, first_and_last)
 # the output now returns two values: the first and last character of the city
 # name, in alphabetical order
