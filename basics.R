@@ -154,14 +154,16 @@ library(dplyr)
 5%>%exp
 # the %>%-operator is the pipe that basically passes the left hand side of the 
 # operator to the first argument of the right hand side operator
-
+eusilc_new <- eusilc |> 
+  filter(!year == 2018) %>% 
+  select(country, year, at_risk_of_poverty_rate, at_risk_of_poverty_rate_after_social_transfers)  
 ## Vectors
 # you can define "a" as vector of numbers
 a <- c(1,2,3,4,5)
 b <- c(1:5)
 # you can also combine functions and vectors
 c <- c(exp(1),exp(2),exp(3),exp(4),exp(5))
-
+eusilc$jahr
 ## TASK
 # solve x^2 + 5*x + 6 = 0 
 # Tip: you will need two lines (+/-)
@@ -194,6 +196,8 @@ q <- 5
 
 ## Vectors
 a <- c(1,2,5.3,6,-2,4) # numeric vector
+# as character
+a<-as.character(a)
 b <- c("one","two","three") # character vector
 c <- c(TRUE,TRUE,TRUE,FALSE,TRUE,FALSE) #logical vector
 d <- c(1,2,7) #integer vector, same as d <- c(1L,2L,7L)
@@ -222,11 +226,11 @@ rnames <- c("R1", "R2")
 cnames <- c("C1", "C2") 
 mymatrix <- matrix(cells, nrow=2, ncol=2, byrow=TRUE, dimnames=list(rnames, 
                                                                     cnames))
-mymatrix
+print(mymatrix)
 # Identify rows, columns or elements using subscripts.
 y[,4] # 4th column of matrix
 y[3,] # 3rd row of matrix 
-y[2:4,1:3] # rows 2,3,4 of columns 1,2,3
+test<-y[2:4,1:3] # rows 2,3,4 of columns 1,2,3
 
 ## Arrays
 # Arrays are similar to matrices but can have more than two dimensions. 
@@ -270,7 +274,7 @@ mylist
 # v <- c(list1,list2)
 # Identify elements of a list using the [[]] convention.
 mylist[[2]] # 2nd component of the list
-mylist[["numbers"]] # component named mynumbers in list
+mylist[["matrix"]] # component named mynumbers in list
 # lists names of all elements in a list
 names(mylist)
 # we can also access multiple items of a list using single brackets 
