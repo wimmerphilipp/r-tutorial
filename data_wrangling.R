@@ -408,7 +408,8 @@ data.pd.svy <- svydesign(
   strata = ~region,      # Stratification variable: 'region'
   weights = ~p_weight,   # Use personal survey weights to ensure representation
   data = data.temp       # Input dataset
-) %>% convey_prep()      # Prepare for inequality analysis (e.g., Lorenz curve)
+) %>% 
+  convey_prep()      # Prepare for inequality analysis (e.g., Lorenz curve)
 
 # Household-level survey design
 data.hd.svy <- svydesign(
@@ -416,7 +417,8 @@ data.hd.svy <- svydesign(
   strata = ~region,      # Stratification variable: 'region'
   weights = ~hh_weight,  # Use household weights
   data = data.temp       # Input dataset
-) %>% convey_prep()
+) %>% 
+  convey_prep()
 
 # 11. Lorenz Curve for household income
 # Calculate and plot the Lorenz curve to show income inequality
