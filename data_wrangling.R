@@ -67,8 +67,9 @@ setwd()
 # Austria. The data starts on 26.02.2020 and ends on 03.05.2021. We will 
 # have a closer look on what data is contained within the dataset, manipulate
 # it and do some descriptives. 
-df <- read.csv("ts_covid_sortiert.csv", sep=";")
+df<- read.csv("ts_covid_sortiert.csv", sep=";")
 str(df$SiebenTageInzidenzFaelle)
+table(df$SiebenTageInzidenzFaelle)
 df$SiebenTageInzidenzFaelle <- gsub(",",".", df$SiebenTageInzidenzFaelle)
 df$SiebenTageInzidenzFaelle <- as.numeric(df$SiebenTageInzidenzFaelle)
 # alternatively you can also use the dplyr package
@@ -91,13 +92,15 @@ summary(df)
 # have a look at the first few rows
 head(df)
 
+table(df$Bezirk)
+
 # scatter plot: why is there such a gap in between the points?
 plot(df$AnzahlFaelleSum)
 
 summary(df$AnzahlFaelleSum)
 
 dftest <- df %>% filter(AnzahlFaelleSum > 50000)|>
-  select(AnzahlFaelleSum, Bezirk)
+  select(AnzahlFaelleSum, Bezirk, Time)
 
 # now we want to get rid of the time dimension. Therefore, we extract the day
 wien <- subset(df, Bezirk=="Wien")
@@ -215,6 +218,8 @@ scatter.smooth(data_novie$AnzahlFaelle, data_novie$AnzEinwohner,  # Smooth scatt
 ################################################################################
 # 1. Clean up the environment
 rm(list = ls())  # Remove all objects from the R environment to start fresh.
+
+# https://www.gesis.org/en/missy/metadata/EU-SILC/2013/Cross-sectional/original
 
 # 2. Introduction to EU-SILC data
 # EU-SILC contains data across four different sheets:

@@ -45,7 +45,7 @@ in sämtlichen Fällen das Bundesministerium für Soziales, Gesundheit, Pflege u
 (BMSGPK).
 
 ```{r load data, include = FALSE}
-df <- read.csv("ts_covid_sortiert.csv", sep=";")
+df <- read.csv("ts_covid_sortiert.csv", sep=";", fileEncoding = "ISO-8859-1")
 preview <- subset(df, Time=="2020-11-12")
 preview <- df[1:10,c(2:4,6,8)]
 ```
@@ -111,9 +111,9 @@ for(i in 0:floor(length(district_ts)/6)){      #divide into subgroups
     ggplot2::theme_classic()+
     ggplot2::theme(axis.text.x = ggplot2::element_blank(), axis.ticks.x = ggplot2::element_blank())+
     ggplot2::geom_vline(xintercept = "2020-11-12", linetype="dashed", color="darkgrey")+
-    ggplot2::annotate("text", x="2020-12-01", y=1, label="Peak-day: 12.11.2020", size=3, color="darkgrey")+
+    ggplot2::annotate("text", x="2020-12-10", y=1, label="Peak-day: 12.11.2020", size=3, color="darkgrey")+
     ggplot2::geom_hline(yintercept = mean(mean_peak$SiebenTageInzidenzFaelle), linetype="dashed", color="darkgrey")+
-    ggplot2::annotate("text",x="2020-09-20", y=590, label="Mean 7-Tages-Inzidenz", size=3,color="darkgrey")
+    ggplot2::annotate("text",x="2020-10-01", y=590,label="Mean 7-Tages-Inzidenz", size=3,color="darkgrey")
 
 print(p)
 }
