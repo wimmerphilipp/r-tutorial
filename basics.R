@@ -166,7 +166,7 @@ c <- c(exp(1),exp(2),exp(3),exp(4),exp(5))
 # Tip: you will need two lines (+/-)
 # use pq-formula
 # the function for the square root is called sqrt()
-# solution starts at line 140
+# solution starts at line 196
 p <- 6 
 q <- 5
 
