@@ -169,7 +169,7 @@ c <- c(exp(1),exp(2),exp(3),exp(4),exp(5))
 # solution starts at line 196
 p <- 6 
 q <- 5
-
+#
 
 
 
