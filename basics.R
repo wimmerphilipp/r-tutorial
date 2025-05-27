@@ -154,16 +154,13 @@ library(dplyr)
 5%>%exp
 # the %>%-operator is the pipe that basically passes the left hand side of the 
 # operator to the first argument of the right hand side operator
-eusilc_new <- eusilc |> 
-  filter(!year == 2018) %>% 
-  select(country, year, at_risk_of_poverty_rate, at_risk_of_poverty_rate_after_social_transfers)  
+
 ## Vectors
 # you can define "a" as vector of numbers
 a <- c(1,2,3,4,5)
 b <- c(1:5)
 # you can also combine functions and vectors
 c <- c(exp(1),exp(2),exp(3),exp(4),exp(5))
-eusilc$jahr
 ## TASK
 # solve x^2 + 5*x + 6 = 0 
 # Tip: you will need two lines (+/-)
