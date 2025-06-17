@@ -165,7 +165,9 @@ rm(list = ls())
 
 # Load the data and fix encoding issues
 df <- read.csv("ts_covid_sortiert.csv", sep = ";")  # Load data from CSV file with semicolon as separator
-df$Bezirk <- iconv(df$Bezirk, from = "latin1", to = "UTF-8", sub = "byte")  # Convert 'Bezirk' column encoding to UTF-8
+guess_encoding("ts_covid_sortiert.csv")
+iconvlist()
+df$Bezirk <- iconv(df$Bezirk, from = "ISO-8859-1", to = "UTF-8", sub = "byte")  # Convert 'Bezirk' column encoding to UTF-8
 
 # Prepare the data for plotting
 data <- df %>% 
