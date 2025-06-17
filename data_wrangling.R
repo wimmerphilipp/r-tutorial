@@ -275,7 +275,7 @@ data <- right_join(aut_hh, aut_indiv, by = "id_h")
 # Keep all rows from 'aut_indiv', add matching household data from 'aut_hh'
 
 # 8. Clean up unnecessary objects
-rm(aut_d, aut_h, aut_p, aut_r, aut_indiv, testjoin_hh, testjoin_p)  # Remove temporary objects to save memory
+rm(aut_d, aut_h, aut_p, aut_r, aut_indiv, aut_hh, testjoin_hh, testjoin_p)  # Remove temporary objects to save memory
 
 # 9. View the final combined dataset
 View(data)  # Open the merged dataset in the R Viewer
@@ -487,5 +487,22 @@ summary(nonsvyols)    # Unweighted regression results
 par(mfrow = c(1, 2))  # Set layout for two plots
 hist(svyols$residuals, main = "Residuals (Weighted)", col = "lightblue")
 hist(nonsvyols$residuals, main = "Residuals (Unweighted)", col = "lightgreen")
+
+
+par(mfrow = c(1, 2))
+plot(predict(nonsvyols), residuals(nonsvyols),
+     main = "Unweighted: Residuals vs Fitted", col = "darkgreen", pch = 16)
+abline(h = 0, col = "red")
+
+plot(
+  x = as.numeric(predict(svyols)),
+  y = as.numeric(residuals(svyols)),
+  main = "Weighted: Residuals vs Fitted",
+  col = "steelblue",
+  pch = 16,
+  xlab = "Fitted Values",
+  ylab = "Residuals"
+)
+abline(h = 0, col = "red")
 
 
