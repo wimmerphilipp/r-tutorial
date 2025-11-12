@@ -54,28 +54,63 @@ install_and_load(packages)
 # for sharing work, as you only have to copy the project's folder:
 df <- read.xlsx("example.xlsx")
 # obviously you could still use the full path. Note, that you need to change \ to /
-df_1 <- read.xlsx("C:/Users/diexl/Documents/Unijob/WU Department/Tutor WiPol/R Tutorium/R-Tutorium-SoSe23/example.xlsx")
+df_1 <- read.xlsx("C:/Users/user/Documents/Unijob/WU Department/Tutor WiPol/R Tutorium/R-Tutorium-SoSe23/example.xlsx")
 # if you need a specific sheet of your excel-file use: (this is only an example)
 df_2 <- read.xlsx("data/example.xlsx", sheet = "Sheet2")
 # getwd gets you your current working directory so you can check where your files
 # are saved. use setwd() to change your current working directory.
 getwd()
 # within the brackets you should specify the link to your directory.
-setwd()
+setwd("C:/Users/Wimme/OneDrive - WU Wien/Dokumente/R-Tutorial/r-tutorial")
 # read CSV-files:
 # this will be our practice file: it contains data on daily covid numbers in
 # Austria. The data starts on 26.02.2020 and ends on 03.05.2021. We will 
 # have a closer look on what data is contained within the dataset, manipulate
 # it and do some descriptives. 
 df<- read.csv("ts_covid_sortiert.csv", sep=";")
-str(df$SiebenTageInzidenzFaelle)
-table(df$SiebenTageInzidenzFaelle)
-df$SiebenTageInzidenzFaelle <- gsub(",",".", df$SiebenTageInzidenzFaelle)
-df$SiebenTageInzidenzFaelle <- as.numeric(df$SiebenTageInzidenzFaelle)
+
+colnames(df) <- c(
+  "date",                    # Time
+  "district",                # Bezirk
+  "district_code",           # GKZ
+  "population",              # AnzEinwohner
+  "cases_daily",             # AnzahlFaelle
+  "cases_total",             # AnzahlFaelleSum
+  "cases_7days",             # AnzahlFaelle7Tage
+  "incidence_7days",         # SiebenTageInzidenzFaelle
+  "deaths_daily",            # AnzahlTotTaeglich
+  "deaths_total",            # AnzahlTotSum
+  "recovered_daily",         # AnzahlGeheiltTaeglich
+  "recovered_total"          # AnzahlGeheiltSum
+)
+
+# with dplyr you can also rename columns
+
+df <- df %>%
+  rename(
+    date = Time,
+    district = Bezirk,
+    district_code = GKZ,
+    population = AnzEinwohner,
+    cases_daily = AnzahlFaelle,
+    cases_total = AnzahlFaelleSum,
+    cases_7days = AnzahlFaelle7Tage,
+    incidence_7days = SiebenTageInzidenzFaelle,
+    deaths_daily = AnzahlTotTaeglich,
+    deaths_total = AnzahlTotSum,
+    recovered_daily = AnzahlGeheiltTaeglich,
+    recovered_total = AnzahlGeheiltSum
+  )
+
+
+str(df$incidence_7days)
+table(df$incidence_7days)
+df$incidence_7days <- gsub(",",".", df$incidence_7days)
+df$incidence_7days <- as.numeric(df$incidence_7days)
 # alternatively you can also use the dplyr package
 df <- df %>%
-  mutate(SiebenTageInzidenzFaelle = as.numeric(gsub(",", ".", SiebenTageInzidenzFaelle)))
-str(df$SiebenTageInzidenzFaelle)
+  mutate(incidence_7days = as.numeric(gsub(",", ".", incidence_7days)))
+str(df$incidence_7days)
 
 ## Data Cleaning ##
 ### have a first look at the data ###
@@ -92,57 +127,57 @@ summary(df)
 # have a look at the first few rows
 head(df)
 
-table(df$Bezirk)
+table(df$district)
 
 # scatter plot: why is there such a gap in between the points?
-plot(df$AnzahlFaelleSum)
+plot(df$cases_total)
 
-summary(df$AnzahlFaelleSum)
+summary(df$cases_total)
 
-dftest <- df %>% filter(AnzahlFaelleSum > 50000)|>
-  select(AnzahlFaelleSum, Bezirk, Time)
+dftest <- df %>% filter(cases_total > 50000)|>
+  select(cases_total, district, date)
 
 # now we want to get rid of the time dimension. Therefore, we extract the day
-wien <- subset(df, Bezirk=="Wien")
-plot(as.ts(wien$AnzahlFaelleSum), lwd=2, col = "red")
+wien <- subset(df, district=="Wien")
+plot(as.ts(wien$cases_total), lwd=2, col = "red")
 
 # frequency distribution of numerical vectors
 # you can also check via histogram
-hist(df$AnzahlFaelle)
-hist(df$AnzahlFaelle, breaks = "sturges")
-hist(df$AnzahlFaelle, breaks = "fd")
-hist(df$AnzahlFaelle, breaks = 3)
-hist(df$AnzahlFaelle, breaks = 100)
-# now we want to get rid of the time dimension. Therefore, we extract the day
+hist(df$cases_daily)
+hist(df$cases_daily, breaks = "sturges")
+hist(df$cases_daily, breaks = "fd")
+hist(df$cases_daily, breaks = 3)
+hist(df$cases_daily, breaks = 100)
+# now we want to get rid of the date dimension. Therefore, we extract the day
 # when the covid-incidence was the highest
 # first we need to find out which day this is. max() gives you the highest 
 # covid-incidence contained in the data.
-max_value <- max(df$SiebenTageInzidenzFaelle)
+max_value <- max(df$incidence_7days)
 # now we use the returned value to subset our dataset. [,] this kind of brackets
 # accesses the dataframe. Entries before the comma refer to the rows of your
 # dataframe, whereas after the comma refer to the column. Think of this code 
-# line as: subset the data at the row where "SiebenTageInzidenzFaelle" equals
-# our max()-value and also return the corresponding column entries for Time and
+# line as: subset the data at the row where "incidence_7days" equals
+# our max()-value and also return the corresponding column entries for date and
 # district.
-max_date <- df[df$SiebenTageInzidenzFaelle == max_value, 
-               c("Time", "Bezirk", "SiebenTageInzidenzFaelle")]
+max_date <- df[df$incidence_7days == max_value, 
+               c("date", "district", "incidence_7days")]
 max_date
 # now we know that on the 12.11.2020 Rohrbach had the highest covid incidence 
 # in our observation period. therefore, we now get rid of the time dimension
 # by extracting this day.
-data_1 <- subset(df, Time == "2020-11-12")
+data_1 <- subset(df, date == "2020-11-12")
 head(data_1)
-# however, we no longer care about the Time-column and we also do not need the
+# however, we no longer care about the date-column and we also do not need the
 # number of people who have recovered. (look at the changes in your
 # envrionment). Also, note that instead of using the subset()-function we
 # directly adressed the index of the columns of interest.
 data_2 <- data_1[,-c(1, 12)]
 head(data_2)
 # however, we could have done this more efficiently
-data <- subset(df, Time == "2020-11-12", select = c(2:10))
+data <- subset(df, date == "2020-11-12", select = c(2:10))
 # or equivalently using dplyr
 data <- df %>%
-  filter(Time == "2020-11-12") %>%
+  filter(date == "2020-11-12") %>%
   select(2:10)
 head(data)
 # You might also see a different type of "coding": the dplyr-version. "dplyr" is
@@ -165,37 +200,55 @@ rm(list = ls())
 
 # Load the data and fix encoding issues
 df <- read.csv("ts_covid_sortiert.csv", sep = ";")  # Load data from CSV file with semicolon as separator
+
+df <- df %>%
+  rename(
+    date = Time,
+    district = Bezirk,
+    district_code = GKZ,
+    population = AnzEinwohner,
+    cases_daily = AnzahlFaelle,
+    cases_total = AnzahlFaelleSum,
+    cases_7days = AnzahlFaelle7Tage,
+    incidence_7days = SiebenTageInzidenzFaelle,
+    deaths_daily = AnzahlTotTaeglich,
+    deaths_total = AnzahlTotSum,
+    recovered_daily = AnzahlGeheiltTaeglich,
+    recovered_total = AnzahlGeheiltSum
+  )
+
+
 guess_encoding("ts_covid_sortiert.csv")
 iconvlist()
-df$Bezirk <- iconv(df$Bezirk, from = "ISO-8859-1", to = "UTF-8", sub = "byte")  # Convert 'Bezirk' column encoding to UTF-8
+df$district <- iconv(df$district, from = "ISO-8859-1", to = "UTF-8", sub = "byte")  # Convert 'district' column encoding to UTF-8
 
 # Prepare the data for plotting
 data <- df %>% 
-  filter(Time == "2020-11-12") %>%  # Filter rows for a specific date: 12th November 2020
-  select(Bezirk, GKZ, AnzEinwohner, AnzahlFaelle, AnzahlFaelleSum, SiebenTageInzidenzFaelle) %>%  # Select relevant columns
-  rename(Inzidenz = SiebenTageInzidenzFaelle) %>%  # Rename 'SiebenTageInzidenzFaelle' to 'Inzidenz' for simplicity
-  mutate(Inzidenz = as.numeric(gsub(",", ".", Inzidenz)))  # Convert Inzidenz to numeric, replacing ',' with '.'
+  filter(date == "2020-11-12") %>%  # Filter rows for a specific date: 12th November 2020
+  select(district, district_code, population, cases_daily, cases_total, incidence_7days) %>%  # Select relevant columns
+  rename(incidence = incidence_7days) %>%  # Rename 'incidence_7days' to 'Inzidenz' for simplicity
+  mutate(incidence = as.numeric(gsub(",", ".", incidence)))  # Convert incidence to numeric, replacing ',' with '.'
 
 # Quick barplot to check the data
-barplot(data$Inzidenz)  # Basic barplot of incidence values
+barplot(data$incidence)  # Basic barplot of incidence values
 
 # Improved barplot with axis labels
-barplot(data$Inzidenz, 
-        names.arg = data$Bezirk,  # Use district names ('Bezirk') as labels
+barplot(data$incidence, 
+        names.arg = data$district,  # Use district names ('district') as labels
         ylab = "Number of positive cases on the reference day")  # Y-axis label
 
 # Define colors for barplot (9 unique colors for differentiation)
 colors <- c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", 
             "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22")
 
-# Create a color indicator based on the first digit of 'GKZ' (district code)
-country_indicator <- as.integer(substr(data$GKZ, 1, 1))  # Extract the first character of 'GKZ' and convert to integer
+# Create a color indicator based on the first digit of 'district_code'
+country_indicator <- as.integer(substr(data$district_code, 1, 1))  # Extract the first character of 'district_code' and convert to integer
 bar_colors <- colors[(country_indicator %% length(colors)) + 1]  # Map colors cyclically using modulo operation
 
 # Final barplot with enhancements
 par(las = 2, mar = c(12, 5, 2, 2))  # Rotate axis labels (las = 2) and adjust margins
-barplot(data$Inzidenz, 
-        names.arg = data$Bezirk,  # District names as labels
+barplot(data$incidence, 
+        names.arg = data$district,  # District names as labels
         ylab = "Number of positive cases on the reference day",  # Y-axis label
         col = bar_colors,  # Apply colors to bars
         border = NA,  # Remove borders around bars
@@ -203,7 +256,7 @@ barplot(data$Inzidenz,
         cex.names = 0.7)  # Reduce font size of axis labels for readability
 
 # Scatterplot: Number of inhabitants vs. number of positive cases
-scatter.smooth(data$AnzahlFaelle, data$AnzEinwohner,  # Smooth scatterplot of positive cases vs inhabitants
+scatter.smooth(data$cases_daily, data$population,  # Smooth scatterplot of positive cases vs inhabitants
                xlab = "Number of people tested positive",  # X-axis label
                ylab = "Number of inhabitants")  # Y-axis label
 
@@ -211,7 +264,7 @@ scatter.smooth(data$AnzahlFaelle, data$AnzEinwohner,  # Smooth scatterplot of po
 data_novie <- data[-94,]  # Exclude row 94 (Vienna) from the dataset
 
 # Scatterplot without Vienna (outlier removed)
-scatter.smooth(data_novie$AnzahlFaelle, data_novie$AnzEinwohner,  # Smooth scatterplot without Vienna
+scatter.smooth(data_novie$cases_daily, data_novie$population,  # Smooth scatterplot without Vienna
                family = "gaussian",  # Use Gaussian smoothing
                xlab = "Number of people tested positive",  # X-axis label
                ylab = "Number of inhabitants",  # Y-axis label
@@ -366,8 +419,8 @@ table(data.temp$educ)    # Frequency table of education levels
 # Population share by education level
 out <- data.temp %>%
   group_by(educ) %>%
-  summarise(pop = sum(p_weight))|>
-  ungroup()# Sum weights for each education level
+  summarise(pop = sum(p_weight))|> # Sum weights for each education level
+  ungroup()
 out$share <- out$pop / n.pop * 100  # Calculate share as a percentage
 sum(out$share)  # Verify shares sum to 100%
 
@@ -462,6 +515,8 @@ lines(
   lwd = 2, 
   col = "gray"           # Line color
 )
+
+options(scipen = 999)
 
 # 13. Wage regressions
 # Prepare the data for wage regression analysis
