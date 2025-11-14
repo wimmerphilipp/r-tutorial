@@ -45,40 +45,60 @@ in sämtlichen Fällen das Bundesministerium für Soziales, Gesundheit, Pflege u
 (BMSGPK).
 
 ```{r load data, include = FALSE}
+library(tidyverse)
+
 df <- read.csv("ts_covid_sortiert.csv", sep=";", fileEncoding = "ISO-8859-1")
-preview <- subset(df, Time=="2020-11-12")
+
+df <- df %>%
+  rename(
+    date = Time,
+    district = Bezirk,
+    district_code = GKZ,
+    population = AnzEinwohner,
+    cases_daily = AnzahlFaelle,
+    cases_total = AnzahlFaelleSum,
+    cases_7days = AnzahlFaelle7Tage,
+    incidence_7days = SiebenTageInzidenzFaelle,
+    deaths_daily = AnzahlTotTaeglich,
+    deaths_total = AnzahlTotSum,
+    recovered_daily = AnzahlGeheiltTaeglich,
+    recovered_total = AnzahlGeheiltSum
+  )
+
+preview <- subset(df, date=="2020-11-12")
 preview <- df[1:10,c(2:4,6,8)]
+
 ```
 Table 1 gives a clear overview about the data:
 ```{r dataoverview, echo=FALSE, fig.align='center'}
 gridExtra::grid.table(preview)
 ```
-We already know Figure 1 from the previous class. Not to pretty, not to usefull, but we printed it anyhow. We also already know that this kind of outlier is due to the fact that Vienna is so much bigger than the rest of the regions contained in the data.
+We already know Figure 1 from the previous class. Not to pretty, not to useful, but we printed it anyhow. We also already know that this kind of outlier is due to the fact that Vienna is so much bigger than the rest of the regions contained in the data.
 ```{r data plot, echo=FALSE, fig.align='center'}
-plot(df$AnzahlFaelleSum, type="p", xlab = "Time", ylab="Number of positive tests", main = "Sum of all positively tested persons")
+plot(df$cases_total, type="p", xlab = "date", ylab="Number of positive tests", main = "Sum of all positively tested persons")
 ```
 Now what we want to do next also is quite obivous. We are going to plot a Scatterplot where we compare the number of positive tests with the number of inhabitants of a region. However, we will do this without Vienna.
 
 ```{r data manipulation, include=FALSE}
-w2 <- df[df$Time >= "2020-09-01" &  df$Time <= "2021-02-15",]
+w2 <- df[df$date >= "2020-09-01" &  df$date <= "2021-02-15",]
 w2 <- as.data.frame(lapply(w2, function(x) gsub(",", ".", x)))
-w2$SiebenTageInzidenzFaelle <- as.numeric(w2$SiebenTageInzidenzFaelle)
-mean_peak <- subset(w2, Time == "2020-11-12", select = c(GKZ,SiebenTageInzidenzFaelle))
-no_vie <- subset(w2, GKZ !=900)
+w2$incidence_7days <- as.numeric(w2$incidence_7days)
+mean_peak <- subset(w2, date == "2020-11-12", select = c(district_code,incidence_7days))
+no_vie <- subset(w2, district_code !=900)
 rm(df)
 ```
 
 Also, note that from now on we are dealing only with the second wave of the pandemic. This will not be displayed in the output, so we need to explicitly mention it.
 ```{r two plots, echo=FALSE, fig.align='center'}
 par(mfrow=c(1,2))
-plot(w2$AnzahlFaelleSum)
-plot(w2$SiebenTageInzidenzFaelle)
+plot(w2$cases_total)
+plot(w2$incidence_7days)
 ```
 
 ```{r scatter, echo=FALSE, fig.align='center'}
 par(mfrow=c(1,2))
-scatter.smooth(no_vie$AnzEinwohner,no_vie$SiebenTageInzidenzFaelle,xlab="Anzahl Einwohner*innen",ylab="7-Tage-Inzidenz", lpars=list(col="red", lwd=3, lty=1))
-scatter.smooth(no_vie$AnzEinwohner,no_vie$AnzahlFaelleSum, xlab="Anzahl Einwohner*innen",ylab="Summe positiv getester Fälle", lpars=list(col="red", lwd=3, lty=1))
+scatter.smooth(no_vie$population,no_vie$incidence_7days,xlab="population",ylab="7-day incidence", lpars=list(col="red", lwd=3, lty=1))
+scatter.smooth(no_vie$population,no_vie$cases_total, xlab="population",ylab="Number of positive tests", lpars=list(col="red", lwd=3, lty=1))
 ```
 The two scatter plots show one of the most important things when it comes to pandemic statistics. The difference between the sum of all cases and the incidence. Because the size of a region matters, people came up with the incidence concept in order to have a comparable statistic.
 
@@ -88,13 +108,13 @@ Lastly, we will work with GG-plots. Note the different structure of these plots:
 district_ts <- list()
 
 # Loop over the unique district IDs
-for (GKZ in unique(w2$GKZ)) {
+for (district_code in unique(w2$district_code)) {
   
   # Subset the data for the current district
-  district_data <- w2[w2$GKZ == GKZ, ]
+  district_data <- w2[w2$district_code == district_code, ]
   
   # Extract the time series for the current district
-  district_ts[[as.character(GKZ)]] <- district_data
+  district_ts[[as.character(district_code)]] <- district_data
 }
 # loops over the districts and divides it into groups: each containing 6 districts
 # 6*i = starting index
@@ -106,14 +126,14 @@ for(i in 0:floor(length(district_ts)/6)){      #divide into subgroups
   sub <- dplyr::bind_rows(sub)                    #create a dataset for every subgroup
 
 # now print the 7-Tages-Inzidenz for every subgroup the loop created    
-  p <- ggplot2::ggplot(sub, ggplot2::aes(x = Time, y = SiebenTageInzidenzFaelle, group = Bezirk, color = Bezirk)) +
+  p <- ggplot2::ggplot(sub, ggplot2::aes(x = date, y = incidence_7days, group = district, color = district)) +
     ggplot2::geom_line()+
     ggplot2::theme_classic()+
     ggplot2::theme(axis.text.x = ggplot2::element_blank(), axis.ticks.x = ggplot2::element_blank())+
     ggplot2::geom_vline(xintercept = "2020-11-12", linetype="dashed", color="darkgrey")+
     ggplot2::annotate("text", x="2020-12-10", y=1, label="Peak-day: 12.11.2020", size=3, color="darkgrey")+
-    ggplot2::geom_hline(yintercept = mean(mean_peak$SiebenTageInzidenzFaelle), linetype="dashed", color="darkgrey")+
-    ggplot2::annotate("text",x="2020-10-01", y=590,label="Mean 7-Tages-Inzidenz", size=3,color="darkgrey")
+    ggplot2::geom_hline(yintercept = mean(mean_peak$incidence_7days), linetype="dashed", color="darkgrey")+
+    ggplot2::annotate("text",x="2020-10-01", y=590,label="Mean 7-day incidence", size=3,color="darkgrey")
 
 print(p)
 }
