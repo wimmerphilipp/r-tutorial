@@ -101,7 +101,7 @@ d <- c/b
 # now as dividing by zero is not possible arithmetically, the console, and also
 # the environment show "Inf"
 # also, space does not matter:
-e <- 5*                     8
+e <- 5*                 8
 f <- 40 /
   5
 # you can also chain different operations in on line
@@ -263,7 +263,7 @@ myframe[,1:2]
 # columns ID and Age from data frame
 myframe[,c("ID","Color")]  
 # variable x1 in the data frame
-myframe$ID    
+myframe$Color   
 # 3rd element of variable x1 in the data frame
 myframe$ID[3]  
 # You can also perform a table by
@@ -313,7 +313,6 @@ class(gender)
 # stores gender as 30 1s and 20 2s and associates
 # 1=female, 2=male internally (alphabetically)
 # R now treats gender as a nominal variable 
-summary(gender)
 summary(gender)
 table(gender)
 str(gender)

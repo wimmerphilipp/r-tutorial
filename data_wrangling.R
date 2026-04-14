@@ -137,6 +137,9 @@ summary(df$cases_total)
 dftest <- df %>% filter(cases_total > 50000)|>
   select(cases_total, district, date)
 
+dftest <- df %>% filter(district == "Wien")|>
+  select(cases_total, district, date)
+
 # now we want to get rid of the time dimension. Therefore, we extract the day
 wien <- subset(df, district=="Wien")
 plot(as.ts(wien$cases_total), lwd=2, col = "red")
