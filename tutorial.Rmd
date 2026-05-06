@@ -46,7 +46,7 @@ library(tidyverse)
 df <- read.csv("ts_covid_sortiert.csv", sep=";", fileEncoding = "ISO-8859-1")
 
 df <- df %>%
-  dplyer::rename(
+  dplyr::rename(
     date = Time,
     district = Bezirk,
     district_code = GKZ,
